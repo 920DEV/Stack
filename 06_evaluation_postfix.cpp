@@ -2,7 +2,7 @@
 
 using namespace std;
 
-
+// Precedance of "Operators" inside the stack;
 int in_stack_pre(char exp){
     if(exp=='+'|| exp=='-'){
         return 2;
@@ -11,9 +11,6 @@ int in_stack_pre(char exp){
         return 4;
     else if(exp=='^')
         return 5;
-    else if(exp==')'){
-        return 0;
-    }
     else if(exp=='(')
         return 0; 
     
@@ -21,6 +18,9 @@ int in_stack_pre(char exp){
         return -1;
     }
 }
+
+// Precedance of "Operators" outside the stack:
+
 int out_stack_pre(char exp){
        if(exp=='+'|| exp=='-'){
         return 1;
@@ -39,6 +39,8 @@ int out_stack_pre(char exp){
     return -1;
 }
 
+// Differentation between operator and operand.
+
 int is_operand(char exp){
     if(exp=='+'|| exp=='-' || exp=='*'|| exp=='/' || exp=='^' || exp=='(' || exp==')'){
         return 0;
@@ -47,6 +49,7 @@ int is_operand(char exp){
         return 1;
     }
 }
+
 string evaluation(string infix){
     stack<char>st;
     st.push('#');
@@ -54,11 +57,14 @@ string evaluation(string infix){
 
     int i=0,j=0;
     int n=infix.size();
-    string postfix(n+1,'f');        // putting all teh string as -1 as we can't leave string empty when the size is aleady declared.
+    string postfix(n,'f');        // putting all the string as -1 as we can't leave string empty when the size is aleady declared.
 
     while(i<n){
         if(is_operand(infix[i])){
             postfix[j++]=infix[i++];
+        }
+        else if(out_stack_pre(infix[i])==in_stack_pre(st.top())){
+            st.pop();
         }
         else{
             if(out_stack_pre(infix[i])>in_stack_pre(st.top())){
@@ -71,7 +77,7 @@ string evaluation(string infix){
         }
 
 }
-while(!st.empty()){
+while(!st.empty() && st.top()!=')'){
     postfix[j++]=st.top();
     st.pop();
 }
